@@ -1,15 +1,12 @@
 import React, { useReducer, useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
+import Layout from 'components/Layout'
 import css from './Calculator.module.css'
 import Button from '../Button/Button'
-
 import { reducer, IOperator } from './reducer'
+import { getLastElements } from 'utils/getLastElements'
 
 type IProps = RouteComponentProps
-
-function last(length: number, maxLength = 10) {
-  return length > maxLength ? length - maxLength : 0
-}
 
 const Calculator: React.FC<IProps> = () => {
   const [state, dispatch] = useReducer(reducer, [])
@@ -19,16 +16,20 @@ const Calculator: React.FC<IProps> = () => {
   const [num2, setNum2] = useState('')
 
   const handleOperand = (e: React.MouseEvent<HTMLElement>) => {
-    if (e.currentTarget.dataset.num) {
-      let num = e.currentTarget.dataset.num
-
-      if (!num1 || !protectedOperator) setNum1(num1 + num)
-      if (num1 && operation) setNum2(num2 + num)
+    if (!(e.target instanceof HTMLButtonElement)) {
+      return
     }
+    const num = e.target.dataset.num
+
+    if (!num1 || !protectedOperator) setNum1(num1 + num)
+    if (num1 && operation) setNum2(num2 + num)
   }
 
   const handleOperator = (e: React.MouseEvent<HTMLElement>) => {
-    const operator = e.currentTarget.dataset.operator as IOperator
+    if (!(e.target instanceof HTMLButtonElement)) {
+      return
+    }
+    const operator = e.target.dataset.operator as IOperator
 
     if (num1 && operator !== '=') {
       setOperation(operator)
@@ -56,45 +57,49 @@ const Calculator: React.FC<IProps> = () => {
   }
 
   return (
-    <div>
-      <div className={css.currentOperation}>
-        {num1 && (
-          <div>
-            <span>{num1}</span> <span>{operation}</span> <span>{num2}</span>
-          </div>
+    <Layout>
+      <div>
+        <div className={css.currentOperation}>
+          {num1 ? (
+            <div>
+              <span>{num1}</span> <span>{operation}</span> <span>{num2}</span>
+            </div>
+          ) : (
+            <div>{state[state.length - 1]}</div>
+          )}
+        </div>
+
+        <div className={css.main} onClick={handleOperand}>
+          {Array.from(Array(10).keys()).map((num) => (
+            <Button key={num} data-num={num}>
+              {num}
+            </Button>
+          ))}
+        </div>
+
+        <div onClick={handleOperator}>
+          {['*', '/', '+', '-', '='].map((operator) => (
+            <Button key={operator} data-operator={operator}>
+              {operator}
+            </Button>
+          ))}
+        </div>
+
+        {state.length !== 0 && (
+          <>
+            <ul>
+              Результат:
+              {state
+                .slice(getLastElements(state.length, 10))
+                .map((result, idx) => (
+                  <li key={`${result}-${idx}`}>{result}</li>
+                ))}
+            </ul>
+            <button onClick={handleReset}>reset</button>
+          </>
         )}
       </div>
-
-      <div className={css.main}>
-        {Array.from(Array(10).keys()).map((num) => (
-          <Button key={num} data-num={num} onClick={handleOperand}>
-            {num}
-          </Button>
-        ))}
-      </div>
-      <div>
-        {['*', '/', '+', '-', '='].map((operator) => (
-          <Button
-            key={operator}
-            data-operator={operator}
-            onClick={handleOperator}
-          >
-            {operator}
-          </Button>
-        ))}
-      </div>
-      {state.length !== 0 && (
-        <>
-          <ul>
-            Результат:
-            {state.slice(last(state.length, 3)).map((result) => (
-              <li key={result}>{result}</li>
-            ))}
-          </ul>
-          <button onClick={handleReset}>reset</button>
-        </>
-      )}
-    </div>
+    </Layout>
   )
 }
 

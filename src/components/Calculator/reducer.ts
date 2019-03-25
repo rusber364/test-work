@@ -23,7 +23,8 @@ export function reducer(state: IState, action: IAction) {
       }
       return state.concat(payload[0] / payload[1])
     }
-    case 'reset': return payload
+    case 'reset':
+      return payload
 
     default:
       throw new Error()

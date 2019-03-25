@@ -1,9 +1,8 @@
 import React from 'react'
 import css from './Button.module.css'
 
-interface IProps {
-  onClick?(e: React.MouseEvent<HTMLElement>): void
-}
+type IOwnProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+type IProps = IOwnProps
 
 const Button: React.FC<IProps> = (props) => {
   const { children, ...rest } = props

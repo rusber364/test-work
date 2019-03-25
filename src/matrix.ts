@@ -1,4 +1,4 @@
-function matrix(cols, rows) {
+export function matrix(cols: number, rows: number) {
   let result = []
   let currentNum = 1
 
@@ -19,5 +19,3 @@ function matrix(cols, rows) {
 
   return result
 }
-
-console.log(matrix(6, 4))

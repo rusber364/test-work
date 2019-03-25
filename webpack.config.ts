@@ -61,6 +61,7 @@ const config: webpack.Configuration = {
     stats: {
       modules: false,
     },
+    historyApiFallback: true,
     port: 3000,
   },
 }

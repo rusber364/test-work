@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --mode=development",
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "type-check": "tsc"
   },
   "dependencies": {
     "@reach/router": "^1.2.1",
@@ -25,8 +26,15 @@
     "@types/react-dom": "^16.8.3",
     "@types/webpack": "^4.4.26",
     "@types/webpack-dev-server": "^3.1.4",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
+    "@typescript-eslint/parser": "^1.5.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.1",
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^1.6.0",
     "html-webpack-plugin": "^3.2.0",
     "prettier": "^1.16.4",
     "style-loader": "^0.23.1",
