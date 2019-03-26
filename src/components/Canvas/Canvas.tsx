@@ -1,12 +1,13 @@
 import React from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { randNumber } from 'utils/randNumber'
+import { randomColor } from 'utils/randomColor'
 import Layout from 'components/Layout'
 
 type IProps = RouteComponentProps
 
 const Canvas: React.FC<IProps> = () => {
-  const refCanvas = React.useRef(null)
+  const refCanvas = React.useRef<HTMLCanvasElement>(null)
   const [start, setStart] = React.useState(false)
 
   const handleStart = () => {
@@ -16,25 +17,32 @@ const Canvas: React.FC<IProps> = () => {
   React.useEffect(() => {
     let idTimer: number
 
-    if (start) {
+    if (refCanvas.current && start) {
+      let idxIterator = 0
+      let maxBlocks = 2025
       let ctx = refCanvas.current.getContext('2d')
-      let coords: string[] = []
+      let coords: { [coords: string]: string } = {}
 
       idTimer = window.setInterval(() => {
         let generateCoords: string
 
-        while (true) {
-          generateCoords = `${randNumber(20, 0) * 24},${randNumber(20, 0) * 24}`
+        while (idxIterator <= maxBlocks) {
+          generateCoords = `${randNumber(44) * 11},${randNumber(44) * 11}`
 
-          if (!coords.includes(generateCoords)) {
-            coords.push(generateCoords)
+          if (!coords[generateCoords]) {
+            coords[generateCoords] = generateCoords
+            idxIterator++
             break
           }
         }
 
-        ctx.fillRect(...generateCoords.split(','), 20, 20)
+        if (ctx) {
+          ctx.fillStyle = randomColor()
+          // @ts-ignore
+          ctx.fillRect(...coords[generateCoords].split(','), 10, 10)
+        }
 
-        if (coords.length >= 441) {
+        if (idxIterator >= maxBlocks) {
           window.clearInterval(idTimer)
           alert('done!')
         }
